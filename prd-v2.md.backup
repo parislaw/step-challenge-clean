@@ -1,0 +1,372 @@
+Perfect! Thank you for the detailed answers and mockups - they really help clarify the vision. Now I'll create a comprehensive Product Requirements Document.
+
+---
+
+# **Product Requirements Document: StepTracker30**
+## **30-Day Step Challenge Web Application**
+
+---
+
+## **1. Executive Summary**
+
+### **1.1 Project Overview**
+StepTracker30 is a web-based fitness challenge platform that automates the management of 30-day step challenges. The application replaces manual spreadsheet tracking with an automated system featuring OCR/AI image processing, payment integration, and real-time progress visualization.
+
+### **1.2 Business Goals**
+- Automate manual step count entry from participant photo submissions
+- Streamline challenge enrollment and payment processing
+- Provide engaging progress visualization similar to GitHub contribution graphs
+- Enable scalable challenge management for growing participant base
+- Generate actionable reports for business insights
+
+### **1.3 Success Metrics**
+- 95% OCR accuracy rate for step count extraction
+- <3 seconds average image processing time
+- 90% payment completion rate for paid challenges
+- 80% daily participation rate during active challenges
+- 50% reduction in admin time spent on data entry
+
+---
+
+## **2. Target Users & Personas**
+
+### **2.1 Primary Users**
+
+**Challenge Participants**
+- Fitness enthusiasts seeking accountability and community
+- Busy professionals wanting structured wellness programs
+- Individuals motivated by gamification and social comparison
+- Age range: 25-55, tech-comfortable but not necessarily tech-savvy
+
+**Challenge Administrators**
+- Fitness coaches and wellness program managers
+- Corporate wellness coordinators
+- Community group organizers
+- Need efficient tools for program management and reporting
+
+---
+
+## **3. Functional Requirements**
+
+### **3.1 User Authentication & Registration**
+
+**FR-001: User Registration**
+- Users can create accounts with email/password
+- Required fields: First Name, Last Name, Email, Password
+- Email verification required before account activation
+- Password requirements: minimum 8 characters, mixed case, numbers
+- GDPR-compliant data collection consent
+
+**FR-002: User Login/Logout**
+- Secure authentication with session management
+- Password reset functionality via email
+- Account lockout after 5 failed attempts
+- Remember me option (30-day session)
+
+### **3.2 Challenge Management**
+
+**FR-003: Challenge Creation (Admin Only)**
+- Admins can create new 30-day challenges
+- Required fields: Challenge Name, Start Date, End Date, Price, Description
+- Optional fields: Coupon codes, discount percentages
+- Challenges must be exactly 30 consecutive days
+- Start dates must be future dates
+
+**FR-004: Challenge Enrollment**
+- Users can browse available challenges
+- Enrollment requires payment processing (if paid challenge)
+- Support for coupon codes and discounts
+- Enrollment cutoff: 24 hours before challenge start
+- Email confirmation upon successful enrollment
+
+**FR-005: Challenge States**
+- Upcoming: Enrollment open, challenge hasn't started
+- Active: Challenge in progress, daily submissions accepted
+- Completed: Challenge ended, final results available
+- Cancelled: Challenge cancelled by admin (full refunds issued)
+
+### **3.3 Payment Processing**
+
+**FR-006: Stripe Integration**
+- Secure payment processing via Stripe
+- Support for major credit/debit cards
+- One-time payment per challenge enrollment
+- Automatic invoice generation and email delivery
+- Refund capability for cancelled challenges
+
+**FR-007: Coupon System**
+- Percentage-based discount codes
+- Single-use and multi-use coupon options
+- Expiration date support
+- Usage tracking and reporting
+- Admin interface for coupon management
+
+### **3.4 Step Submission & Processing**
+
+**FR-008: Daily Step Submission**
+- Users can upload one image per day during active challenges
+- Accepted formats: JPG, PNG, WEBP
+- Maximum file size: 10MB
+- OCR/AI processing to extract step count from images
+- Submission deadline: 11:59 PM local time each day
+
+**FR-009: OCR/AI Processing**
+- Automated step count extraction from uploaded images
+- Support for common step counter displays (phones, fitness trackers, apps)
+- Confidence score for each extraction
+- Manual review queue for low-confidence results
+- Processing time target: <3 seconds per image
+
+**FR-010: Manual Override System**
+- Admin ability to manually enter/correct step counts
+- Override reason tracking (OCR failed, dispute resolution, etc.)
+- Audit trail for all manual changes
+- Participant notification of manual corrections
+
+### **3.5 Progress Tracking & Visualization**
+
+**FR-011: Personal Progress Dashboard**
+- GitHub-style 30-day grid showing daily performance
+- Color coding: Blue (daily leader), Green (≥10,000 steps), Orange (<10,000 steps)
+- Current streak counter
+- Days remaining in challenge
+- Goal achievement percentage
+
+**FR-012: Community Leaderboard**
+- Real-time leaderboard showing all participants
+- Same color-coded grid system as personal dashboard
+- Participant names (first name + last initial)
+- Sortable by various metrics (total steps, streak, completion rate)
+- Anonymous participation option
+
+### **3.6 Admin Dashboard**
+
+**FR-013: Challenge Administration**
+- View all challenges (upcoming, active, completed)
+- Participant enrollment tracking
+- Daily submission monitoring
+- Manual step count override interface
+- Challenge performance metrics
+
+**FR-014: Payment Reporting**
+- Revenue reports by challenge
+- Payment status tracking
+- Refund processing interface
+- Coupon usage analytics
+- CSV export functionality
+
+**FR-015: Data Management**
+- Participant data export (CSV format)
+- Challenge results export
+- OCR accuracy reporting
+- System usage analytics
+- GDPR data deletion tools
+
+---
+
+## **4. Non-Functional Requirements**
+
+### **4.1 Performance**
+- Page load time: <2 seconds for 95% of requests
+- OCR processing: <3 seconds per image
+- Support for 1,000 concurrent users
+- 99.5% uptime during challenge periods
+- Database response time: <500ms for queries
+
+### **4.2 Security**
+- HTTPS encryption for all communications
+- PCI DSS compliance for payment processing
+- GDPR compliance for EU users
+- Regular security audits and penetration testing
+- Data encryption at rest and in transit
+
+### **4.3 Scalability**
+- Horizontal scaling capability
+- Cloud-based infrastructure (AWS/GCP)
+- CDN for image storage and delivery
+- Auto-scaling during peak usage periods
+- Database optimization for large datasets
+
+### **4.4 Usability**
+- Responsive design for desktop, tablet, and mobile
+- WCAG 2.1 AA accessibility compliance
+- Intuitive navigation and user interface
+- Progressive web app (PWA) capabilities
+- Offline capability for viewing progress
+
+---
+
+## **5. Technical Architecture**
+
+### **5.1 Technology Stack**
+- **Frontend**: React.js with responsive CSS framework
+- **Backend**: Node.js with Express.js
+- **Database**: PostgreSQL with Redis for caching
+- **OCR/AI**: Google Cloud Vision API or AWS Textract
+- **Payment**: Stripe API
+- **File Storage**: AWS S3 or Google Cloud Storage
+- **Hosting**: AWS/GCP with auto-scaling groups
+
+### **5.2 Data Model Overview**
+
+**Core Entities:**
+- Users (id, first_name, last_name, email, password_hash, created_at, gdpr_consent)
+- Challenges (id, name, start_date, end_date, price, description, status)
+- Enrollments (user_id, challenge_id, payment_status, enrollment_date)
+- DailySubmissions (user_id, challenge_id, date, image_url, step_count, ocr_confidence, manual_override)
+- Payments (enrollment_id, amount, stripe_payment_id, status, coupon_id)
+- Coupons (id, code, discount_percentage, usage_limit, expiration_date)
+
+### **5.3 API Endpoints**
+
+**Authentication:**
+- POST /auth/register
+- POST /auth/login
+- POST /auth/logout
+- POST /auth/forgot-password
+
+**Challenges:**
+- GET /challenges (public challenges list)
+- POST /challenges (admin only)
+- GET /challenges/:id
+- POST /challenges/:id/enroll
+
+**Submissions:**
+- POST /submissions/upload
+- GET /submissions/my-progress
+- PUT /submissions/:id/manual-override (admin only)
+
+**Admin:**
+- GET /admin/dashboard
+- GET /admin/challenges/:id/participants
+- GET /admin/reports/payments
+- POST /admin/coupons
+
+---
+
+## **6. User Stories & Acceptance Criteria**
+
+### **6.1 User Registration & Onboarding**
+
+**US-001**: As a new user, I want to create an account so I can participate in step challenges.
+
+*Acceptance Criteria:*
+- User can register with first name, last name, email, and password
+- Email verification is required before account activation
+- User receives welcome email after successful registration
+- GDPR consent checkbox is required for EU users
+
+### **6.2 Challenge Enrollment**
+
+**US-002**: As a registered user, I want to enroll in upcoming challenges so I can participate.
+
+*Acceptance Criteria:*
+- User can view list of available challenges
+- User can see challenge details (dates, price, description)
+- Payment processing works for paid challenges
+- User receives enrollment confirmation email
+- Coupon codes apply discounts correctly
+
+### **6.3 Daily Step Submission**
+
+**US-003**: As a challenge participant, I want to submit my daily step count via photo so my progress is tracked.
+
+*Acceptance Criteria:*
+- User can upload one photo per day during active challenges
+- OCR automatically extracts step count from image
+- User sees confirmation of successful submission
+- Daily submission deadline is enforced
+- User cannot submit for past dates
+
+### **6.4 Progress Visualization**
+
+**US-004**: As a participant, I want to see my progress in a visual format so I can track my performance.
+
+*Acceptance Criteria:*
+- 30-day grid displays with appropriate color coding
+- Current streak is prominently displayed
+- Goal achievement percentage is shown
+- Progress updates in real-time after submissions
+
+### **6.5 Community Leaderboard**
+
+**US-005**: As a participant, I want to see how I compare to other participants so I feel motivated.
+
+*Acceptance Criteria:*
+- Leaderboard shows all participants in current challenge
+- Color-coded grid shows each participant's daily performance
+- Real-time updates when new submissions are processed
+- Participant privacy is maintained (first name + last initial only)
+
+### **6.6 Admin Challenge Management**
+
+**US-006**: As an admin, I want to create and manage challenges so I can organize step competitions.
+
+*Acceptance Criteria:*
+- Admin can create new 30-day challenges
+- Admin can set challenge price and description
+- Admin can create and manage coupon codes
+- Admin can view enrollment statistics
+- Admin can manually override step counts when needed
+
+---
+
+## **7. MVP Scope & Roadmap**
+
+### **7.1 MVP Features (Phase 1 - 12 weeks)**
+- User registration and authentication
+- Basic challenge creation and enrollment
+- Stripe payment integration
+- Photo upload and OCR processing
+- Personal progress dashboard
+- Basic admin panel
+- Community leaderboard
+
+### **7.2 Phase 2 Features (8 weeks)**
+- Advanced admin reporting
+- Coupon system
+- Manual override interface
+- Enhanced OCR accuracy
+- Performance optimizations
+- GDPR compliance tools
+
+### **7.3 Phase 3 Features (Future)**
+- Mobile app development
+- Health API integrations
+- Team challenges
+- Advanced analytics
+- Social features
+
+---
+
+## **8. Risk Assessment**
+
+### **8.1 Technical Risks**
+- **OCR Accuracy**: Mitigation through multiple OCR providers and manual override system
+- **Scalability**: Cloud-native architecture with auto-scaling capabilities
+- **Payment Security**: PCI DSS compliance and Stripe's secure infrastructure
+
+### **8.2 Business Risks**
+- **User Adoption**: Comprehensive testing and user feedback integration
+- **Competition**: Focus on unique features like automated OCR and community aspects
+- **Regulatory**: GDPR compliance from day one
+
+---
+
+## **9. Success Criteria & KPIs**
+
+### **9.1 Technical KPIs**
+- OCR accuracy rate: >95%
+- System uptime: >99.5%
+- Page load times: <2 seconds
+- Payment success rate: >98%
+
+### **9.2 Business KPIs**
+- User retention rate: >70% completion rate
+- Payment conversion: >90% of enrolled users complete payment
+- Admin time savings: >50% reduction in manual work
+- User satisfaction: >4.5/5 average rating
+
+---
+
+This PRD provides a comprehensive foundation for your development team to build StepTracker30. The mockups you provided align perfectly with these requirements, and the phased approach allows for iterative development and user feedback integration.
