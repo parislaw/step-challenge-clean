@@ -2487,6 +2487,11 @@ body {
 
 .progress-grid-container.compact .progress-cell:hover {
   opacity: 0.8;
+  transform: scale(1.2);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  z-index: 10;
+  position: relative;
 }
 
 .progress-grid-container.compact .progress-cell.leader {
