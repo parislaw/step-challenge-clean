@@ -244,12 +244,35 @@ const Leaderboard = () => {
                             onMouseEnter={(e) => handleParticipantHover(participant, e)}
                             onMouseLeave={handleParticipantLeave}
                           >
-                            <span className="participant-name">
-                              {participant.first_name} {participant.last_initial}.
-                            </span>
-                            {isCurrentUser(participant.id) && (
-                              <span className="you-badge">You</span>
-                            )}
+                            <div className="participant-avatar">
+                              <span className="avatar-initials">
+                                {participant.first_name[0]}{participant.last_initial}
+                              </span>
+                            </div>
+                            <div className="participant-details">
+                              <span className="participant-name">
+                                {participant.first_name} {participant.last_initial}.
+                                {isCurrentUser(participant.id) && (
+                                  <span className="you-badge">You</span>
+                                )}
+                              </span>
+                              <div className="participant-stats">
+                                <span className="stat-item">
+                                  <span className="stat-value">{formatNumber(participant.total_steps || 0)}</span>
+                                  <span className="stat-label">total steps</span>
+                                </span>
+                                <span className="stat-divider">•</span>
+                                <span className="stat-item">
+                                  <span className="stat-value">{Math.round(participant.completion_percentage || 0)}%</span>
+                                  <span className="stat-label">complete</span>
+                                </span>
+                                <span className="stat-divider">•</span>
+                                <span className="stat-item">
+                                  <span className="stat-value">{participant.current_streak || 0}</span>
+                                  <span className="stat-label">streak</span>
+                                </span>
+                              </div>
+                            </div>
                           </div>
                         </div>
                         
