@@ -1958,10 +1958,143 @@ body {
   
   .podium-container {
     padding: 1.5rem;
+    margin-bottom: 2rem;
   }
   
   .podium-container h3 {
     font-size: 1.3rem;
+  }
+
+  /* Mobile participant rows */
+  .leaderboard-grid-container {
+    padding: 1.5rem;
+  }
+
+  .participant-row {
+    grid-template-columns: 50px 1fr;
+    gap: 0.75rem;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .participant-progress {
+    grid-column: 1 / -1;
+    margin-top: 1rem;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .participant-name-container {
+    flex-direction: row;
+    gap: 0.5rem;
+    padding: 0.25rem;
+    width: 100%;
+  }
+
+  .participant-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  .participant-avatar .avatar-initials {
+    font-size: 0.75rem;
+  }
+
+  .participant-details {
+    flex: 1;
+  }
+
+  .participant-stats {
+    flex-wrap: wrap;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+  }
+
+  .stat-divider {
+    display: none;
+  }
+
+  .expand-button {
+    margin-top: 0.5rem;
+    width: 100%;
+    height: 32px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+  }
+
+  /* Mobile expanded details */
+  .participant-expanded-details {
+    padding: 1rem;
+  }
+
+  .expanded-stats {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .expanded-stat {
+    padding: 0.75rem;
+    flex-direction: row;
+    justify-content: space-between;
+    text-align: left;
+  }
+
+  .expanded-stat-label {
+    margin-bottom: 0;
+  }
+
+  .expanded-stat-value {
+    font-size: 1.1rem;
+  }
+
+  .recent-activity {
+    padding: 0.75rem;
+  }
+
+  .recent-days {
+    gap: 0.25rem;
+  }
+
+  .recent-day {
+    padding: 0.375rem;
+  }
+
+  /* Touch-friendly progress grid */
+  .progress-grid-container.compact .progress-cell {
+    min-width: 16px;
+    min-height: 16px;
+    border-radius: 3px;
+  }
+
+  .progress-grid-container.compact .progress-cell:hover {
+    transform: scale(1.1);
+  }
+
+  /* Mobile podium adjustments */
+  .podium-position {
+    padding: 1rem;
+  }
+
+  .podium-rank {
+    font-size: 2rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .podium-avatar {
+    width: 50px;
+    height: 50px;
+  }
+
+  .avatar-initials {
+    font-size: 1rem;
+  }
+
+  .podium-stats {
+    gap: 0.2rem;
+  }
+
+  .podium-stats span {
+    font-size: 0.8rem;
   }
 }
 .leaderboard-header {
