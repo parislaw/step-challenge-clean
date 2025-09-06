@@ -183,10 +183,51 @@ const Leaderboard = () => {
               <div className="loading">Loading leaderboard...</div>
             ) : (
               <>
+                {/* Top Performers Podium */}
+                {leaderboardData.leaderboard.length > 0 && (
+                  <div className="podium-container">
+                    <h3>🏆 Top Performers</h3>
+                    <div className="podium">
+                      {leaderboardData.leaderboard.slice(0, 3).map((participant, index) => (
+                        <div 
+                          key={participant.id} 
+                          className={`podium-position position-${index + 1} ${isCurrentUser(participant.id) ? 'current-user' : ''}`}
+                        >
+                          <div className="podium-rank">
+                            {getRankIcon(participant.rank)}
+                          </div>
+                          <div className="podium-avatar">
+                            <span className="avatar-initials">
+                              {participant.first_name[0]}{participant.last_initial}
+                            </span>
+                          </div>
+                          <div className="podium-info">
+                            <div className="podium-name">
+                              {participant.first_name} {participant.last_initial}.
+                              {isCurrentUser(participant.id) && <span className="you-badge-small">You</span>}
+                            </div>
+                            <div className="podium-stats">
+                              <span className="total-steps">{formatNumber(participant.total_steps || 0)} steps</span>
+                              <span className="completion-rate">{Math.round(participant.completion_percentage || 0)}% complete</span>
+                            </div>
+                          </div>
+                          <div className="podium-progress">
+                            <ProgressGrid
+                              submissions={participant.daily_submissions || []}
+                              challengeStartDate={leaderboardData.challenge.start_date}
+                              compact={true}
+                            />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 {/* Leaderboard Grid */}
                 <div className="leaderboard-grid-container">
                   <div className="leaderboard-grid">
-                    {leaderboardData.leaderboard.map((participant) => (
+                    {leaderboardData.leaderboard.slice(3).map((participant, index) => (
                       <div 
                         key={participant.id} 
                         className={`participant-row ${isCurrentUser(participant.id) ? 'current-user' : ''}`}
