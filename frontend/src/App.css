@@ -2441,6 +2441,7 @@ body {
 .progress-grid-container.compact {
   margin: 0;
   width: 100%;
+  position: relative;
 }
 
 .progress-grid-container.compact .progress-grid {
@@ -2450,6 +2451,30 @@ body {
   width: 100%;
   margin: 0;
   padding: 4px;
+  position: relative;
+}
+
+/* Weekly dividers for better visualization */
+.progress-grid-container.compact .progress-grid::before {
+  content: '';
+  position: absolute;
+  left: calc(7 * (12px + 2px) - 1px);
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 1;
+}
+
+.progress-grid-container.compact .progress-grid::after {
+  content: '';
+  position: absolute;
+  left: calc(14 * (12px + 2px) - 1px);
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: rgba(0, 0, 0, 0.1);
+  z-index: 1;
 }
 
 .progress-grid-container.compact .progress-cell {
