@@ -2306,8 +2306,153 @@ body {
 .participant-progress {
   display: flex;
   justify-content: flex-start;
+  align-items: center;
   width: 100%;
   min-width: 0;
+  gap: 1rem;
+  position: relative;
+}
+
+.expand-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.expand-button:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.participant-container {
+  margin-bottom: 1rem;
+}
+
+.participant-row.expanded {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.participant-expanded-details {
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 20%, #f1f5f9 100%);
+  border: 2px solid rgba(102, 126, 234, 0.1);
+  border-top: none;
+  border-bottom-left-radius: 14px;
+  border-bottom-right-radius: 14px;
+  padding: 1.5rem;
+  animation: expandDown 0.3s ease-out;
+  overflow: hidden;
+}
+
+@keyframes expandDown {
+  from {
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+  to {
+    max-height: 300px;
+    opacity: 1;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
+  }
+}
+
+.expanded-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.expanded-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+.expanded-stat {
+  background: white;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.expanded-stat-label {
+  color: var(--medium-gray);
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.expanded-stat-value {
+  color: var(--dark-gray);
+  font-size: 1.25rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.recent-activity {
+  background: white;
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.recent-activity h5 {
+  color: var(--dark-gray);
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.recent-days {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.recent-day {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  background: var(--light-gray);
+  border-radius: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.recent-date {
+  color: var(--medium-gray);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.recent-steps {
+  color: var(--dark-gray);
+  font-size: 0.85rem;
+  font-weight: 600;
 }
 
 /* Participant Tooltip Styles */
