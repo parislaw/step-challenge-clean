@@ -14,6 +14,7 @@ const Leaderboard = () => {
   const [sortBy, setSortBy] = useState('total_steps');
   const [hoveredParticipant, setHoveredParticipant] = useState(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
+  const [expandedRows, setExpandedRows] = useState(new Set());
 
   // Load available challenges on component mount
   useEffect(() => {
