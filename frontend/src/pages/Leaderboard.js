@@ -246,64 +246,123 @@ const Leaderboard = () => {
                 {/* Leaderboard Grid */}
                 <div className="leaderboard-grid-container">
                   <div className="leaderboard-grid">
-                    {leaderboardData.leaderboard.slice(3).map((participant, index) => (
-                      <div 
-                        key={participant.id} 
-                        className={`participant-row ${isCurrentUser(participant.id) ? 'current-user' : ''}`}
-                      >
-                        <div className="participant-rank">
-                          <span className="rank-icon">
-                            {getRankIcon(participant.rank)}
-                          </span>
-                        </div>
-                        
-                        <div className="participant-info">
+                    {leaderboardData.leaderboard.slice(3).map((participant, index) => {
+                      const isExpanded = expandedRows.has(participant.id);
+                      const recentDays = getDailyBreakdown(participant.daily_submissions, leaderboardData.challenge.start_date);
+                      
+                      return (
+                        <div key={participant.id} className="participant-container">
                           <div 
-                            className="participant-name-container"
-                            onMouseEnter={(e) => handleParticipantHover(participant, e)}
-                            onMouseLeave={handleParticipantLeave}
+                            className={`participant-row ${isCurrentUser(participant.id) ? 'current-user' : ''} ${isExpanded ? 'expanded' : ''}`}
                           >
-                            <div className="participant-avatar">
-                              <span className="avatar-initials">
-                                {participant.first_name[0]}{participant.last_initial}
+                            <div className="participant-rank">
+                              <span className="rank-icon">
+                                {getRankIcon(participant.rank)}
                               </span>
                             </div>
-                            <div className="participant-details">
-                              <span className="participant-name">
-                                {participant.first_name} {participant.last_initial}.
-                                {isCurrentUser(participant.id) && (
-                                  <span className="you-badge">You</span>
-                                )}
-                              </span>
-                              <div className="participant-stats">
-                                <span className="stat-item">
-                                  <span className="stat-value">{formatNumber(participant.total_steps || 0)}</span>
-                                  <span className="stat-label">total steps</span>
-                                </span>
-                                <span className="stat-divider">•</span>
-                                <span className="stat-item">
-                                  <span className="stat-value">{Math.round(participant.completion_percentage || 0)}%</span>
-                                  <span className="stat-label">complete</span>
-                                </span>
-                                <span className="stat-divider">•</span>
-                                <span className="stat-item">
-                                  <span className="stat-value">{participant.current_streak || 0}</span>
-                                  <span className="stat-label">streak</span>
-                                </span>
+                            
+                            <div className="participant-info">
+                              <div 
+                                className="participant-name-container"
+                                onMouseEnter={(e) => handleParticipantHover(participant, e)}
+                                onMouseLeave={handleParticipantLeave}
+                              >
+                                <div className="participant-avatar">
+                                  <span className="avatar-initials">
+                                    {participant.first_name[0]}{participant.last_initial}
+                                  </span>
+                                </div>
+                                <div className="participant-details">
+                                  <span className="participant-name">
+                                    {participant.first_name} {participant.last_initial}.
+                                    {isCurrentUser(participant.id) && (
+                                      <span className="you-badge">You</span>
+                                    )}
+                                  </span>
+                                  <div className="participant-stats">
+                                    <span className="stat-item">
+                                      <span className="stat-value">{formatNumber(participant.total_steps || 0)}</span>
+                                      <span className="stat-label">total steps</span>
+                                    </span>
+                                    <span className="stat-divider">•</span>
+                                    <span className="stat-item">
+                                      <span className="stat-value">{Math.round(participant.completion_percentage || 0)}%</span>
+                                      <span className="stat-label">complete</span>
+                                    </span>
+                                    <span className="stat-divider">•</span>
+                                    <span className="stat-item">
+                                      <span className="stat-value">{participant.current_streak || 0}</span>
+                                      <span className="stat-label">streak</span>
+                                    </span>
+                                  </div>
+                                </div>
                               </div>
                             </div>
+                            
+                            <div className="participant-progress">
+                              <ProgressGrid
+                                submissions={participant.daily_submissions || []}
+                                challengeStartDate={leaderboardData.challenge.start_date}
+                                compact={true}
+                              />
+                              <button 
+                                className="expand-button"
+                                onClick={() => toggleRowExpansion(participant.id)}
+                                aria-label={isExpanded ? 'Collapse details' : 'Expand details'}
+                              >
+                                {isExpanded ? '▲' : '▼'}
+                              </button>
+                            </div>
                           </div>
+                          
+                          {isExpanded && (
+                            <div className="participant-expanded-details">
+                              <div className="expanded-content">
+                                <div className="expanded-stats">
+                                  <div className="expanded-stat">
+                                    <span className="expanded-stat-label">Average Daily Steps</span>
+                                    <span className="expanded-stat-value">
+                                      {formatNumber(Math.round((participant.total_steps || 0) / 30))}
+                                    </span>
+                                  </div>
+                                  <div className="expanded-stat">
+                                    <span className="expanded-stat-label">Goal Days (≥10K)</span>
+                                    <span className="expanded-stat-value">
+                                      {participant.goal_days || 0}/30
+                                    </span>
+                                  </div>
+                                  <div className="expanded-stat">
+                                    <span className="expanded-stat-label">Best Day</span>
+                                    <span className="expanded-stat-value">
+                                      {formatNumber(
+                                        Math.max(...(participant.daily_submissions || []).map(s => s.step_count || 0))
+                                      )}
+                                    </span>
+                                  </div>
+                                </div>
+                                {recentDays.length > 0 && (
+                                  <div className="recent-activity">
+                                    <h5>Recent Activity</h5>
+                                    <div className="recent-days">
+                                      {recentDays.map((day, idx) => (
+                                        <div key={idx} className="recent-day">
+                                          <span className="recent-date">
+                                            {new Date(day.date || day.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                                          </span>
+                                          <span className="recent-steps">
+                                            {formatNumber(day.step_count || 0)} steps
+                                          </span>
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          )}
                         </div>
-                        
-                        <div className="participant-progress">
-                          <ProgressGrid
-                            submissions={participant.daily_submissions || []}
-                            challengeStartDate={leaderboardData.challenge.start_date}
-                            compact={true}
-                          />
-                        </div>
-                      </div>
-                    ))}
+                      );
+                    })}
                   </div>
                 </div>
 
