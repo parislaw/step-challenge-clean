@@ -108,6 +108,24 @@ const Leaderboard = () => {
     setHoveredParticipant(null);
   };
 
+  const toggleRowExpansion = (participantId) => {
+    const newExpanded = new Set(expandedRows);
+    if (newExpanded.has(participantId)) {
+      newExpanded.delete(participantId);
+    } else {
+      newExpanded.add(participantId);
+    }
+    setExpandedRows(newExpanded);
+  };
+
+  const getDailyBreakdown = (dailySubmissions, challengeStartDate) => {
+    if (!dailySubmissions || dailySubmissions.length === 0) return [];
+    
+    return dailySubmissions
+      .sort((a, b) => new Date(a.date || a.created_at) - new Date(b.date || b.created_at))
+      .slice(0, 7); // Show last 7 days for expanded view
+  };
+
   if (challenges.length === 0) {
     return (
       <div className="container">
