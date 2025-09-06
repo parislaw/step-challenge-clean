@@ -2132,7 +2132,7 @@ body {
 
 .participant-row {
   display: grid;
-  grid-template-columns: 60px 180px 1fr;
+  grid-template-columns: 60px 300px 1fr;
   align-items: center;
   gap: 1rem;
   padding: 1rem 1.5rem;
