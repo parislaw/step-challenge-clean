@@ -15,6 +15,7 @@ const Leaderboard = () => {
   const [hoveredParticipant, setHoveredParticipant] = useState(null);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const [expandedRows, setExpandedRows] = useState(new Set());
+  const [viewMode, setViewMode] = useState('compact'); // 'compact' | 'detailed'
 
   // Load available challenges on component mount
   useEffect(() => {
@@ -126,6 +127,18 @@ const Leaderboard = () => {
       .slice(0, 7); // Show last 7 days for expanded view
   };
 
+  const scrollToCurrentUser = () => {
+    if (!user || !leaderboardData) return;
+    
+    const userIndex = leaderboardData.leaderboard.findIndex(p => p.id === user.id);
+    if (userIndex >= 0) {
+      const element = document.querySelector(`[data-participant-id="${user.id}"]`);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  };
+
   if (challenges.length === 0) {
     return (
       <div className="container">
@@ -181,80 +194,134 @@ const Leaderboard = () => {
               </div>
             </div>
 
-            {/* Sort Controls */}
-            <div className="sort-controls">
-              <label htmlFor="sort-select">Sort by:</label>
-              <select
-                id="sort-select"
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="form-control inline"
-              >
-                <option value="total_steps">Total Steps</option>
-                <option value="avg_daily_steps">Avg Daily Steps</option>
-                <option value="goal_days">Goal Days (≥10K)</option>
-                <option value="current_streak">Current Streak</option>
-                <option value="completion_percentage">Completion %</option>
-              </select>
+            {/* Controls Section */}
+            <div className="leaderboard-controls">
+              <div className="controls-left">
+                <div className="sort-controls">
+                  <label htmlFor="sort-select">Sort by:</label>
+                  <select
+                    id="sort-select"
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="form-control inline"
+                  >
+                    <option value="total_steps">Total Steps</option>
+                    <option value="avg_daily_steps">Avg Daily Steps</option>
+                    <option value="goal_days">Goal Days (≥10K)</option>
+                    <option value="current_streak">Current Streak</option>
+                    <option value="completion_percentage">Completion %</option>
+                  </select>
+                </div>
+                
+                <div className="view-controls">
+                  <label htmlFor="view-select">View:</label>
+                  <select
+                    id="view-select"
+                    value={viewMode}
+                    onChange={(e) => setViewMode(e.target.value)}
+                    className="form-control inline"
+                  >
+                    <option value="compact">Compact</option>
+                    <option value="detailed">Detailed</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="controls-right">
+                {user && (
+                  <button 
+                    className="find-me-btn"
+                    onClick={scrollToCurrentUser}
+                    title="Scroll to my position"
+                  >
+                    📍 Find Me
+                  </button>
+                )}
+              </div>
             </div>
 
             {loading ? (
               <div className="loading">Loading leaderboard...</div>
             ) : (
               <>
-                {/* Top Performers Podium */}
+                {/* Compact Top Performers Bar */}
                 {leaderboardData.leaderboard.length > 0 && (
-                  <div className="podium-container">
+                  <div className="top-performers-bar">
                     <h3>🏆 Top Performers</h3>
-                    <div className="podium">
+                    <div className="top-performers-list">
                       {leaderboardData.leaderboard.slice(0, 3).map((participant, index) => (
                         <div 
                           key={participant.id} 
-                          className={`podium-position position-${index + 1} ${isCurrentUser(participant.id) ? 'current-user' : ''}`}
+                          className={`top-performer-item position-${index + 1} ${isCurrentUser(participant.id) ? 'current-user' : ''}`}
                         >
-                          <div className="podium-rank">
-                            {getRankIcon(participant.rank)}
-                          </div>
-                          <div className="podium-avatar">
-                            <span className="avatar-initials">
-                              {participant.first_name[0]}{participant.last_initial}
-                            </span>
-                          </div>
-                          <div className="podium-info">
-                            <div className="podium-name">
-                              {participant.first_name} {participant.last_initial}.
-                              {isCurrentUser(participant.id) && <span className="you-badge-small">You</span>}
-                            </div>
-                            <div className="podium-stats">
-                              <span className="total-steps">{formatNumber(participant.total_steps || 0)} steps</span>
-                              <span className="completion-rate">{Math.round(participant.completion_percentage || 0)}% complete</span>
-                            </div>
-                          </div>
-                          <div className="podium-progress">
-                            <ProgressGrid
-                              submissions={participant.daily_submissions || []}
-                              challengeStartDate={leaderboardData.challenge.start_date}
-                              compact={true}
-                            />
-                          </div>
+                          <span className="top-rank">{getRankIcon(participant.rank)}</span>
+                          <span className="top-name">
+                            {participant.first_name} {participant.last_initial}.
+                            {isCurrentUser(participant.id) && <span className="you-badge-mini">You</span>}
+                          </span>
+                          <span className="top-steps">{formatNumber(participant.total_steps || 0)}</span>
                         </div>
                       ))}
                     </div>
                   </div>
                 )}
 
-                {/* Leaderboard Grid */}
-                <div className="leaderboard-grid-container">
-                  <div className="leaderboard-grid">
-                    {leaderboardData.leaderboard.slice(3).map((participant, index) => {
-                      const isExpanded = expandedRows.has(participant.id);
-                      const recentDays = getDailyBreakdown(participant.daily_submissions, leaderboardData.challenge.start_date);
-                      
-                      return (
-                        <div key={participant.id} className="participant-container">
-                          <div 
-                            className={`participant-row ${isCurrentUser(participant.id) ? 'current-user' : ''} ${isExpanded ? 'expanded' : ''}`}
-                          >
+                {/* Leaderboard List */}
+                <div className={`leaderboard-container ${viewMode}`}>
+                  {viewMode === 'compact' ? (
+                    /* Compact Table View */
+                    <div className="compact-table">
+                      <div className="table-header">
+                        <div className="col-rank">Rank</div>
+                        <div className="col-name">Name</div>
+                        <div className="col-steps">Steps</div>
+                        <div className="col-grid">30-Day Progress</div>
+                        <div className="col-completion">Complete</div>
+                      </div>
+                      {leaderboardData.leaderboard.map((participant, index) => (
+                        <div 
+                          key={participant.id} 
+                          className={`table-row ${isCurrentUser(participant.id) ? 'current-user' : ''}`}
+                          data-participant-id={participant.id}
+                        >
+                          <div className="col-rank">
+                            <span className="rank-number">{participant.rank}</span>
+                          </div>
+                          <div className="col-name">
+                            <span className="participant-name-compact">
+                              {participant.first_name} {participant.last_initial}.
+                              {isCurrentUser(participant.id) && <span className="you-badge-mini">You</span>}
+                            </span>
+                          </div>
+                          <div className="col-steps">
+                            <span className="steps-value">{formatNumber(participant.total_steps || 0)}</span>
+                          </div>
+                          <div className="col-grid">
+                            <ProgressGrid
+                              submissions={participant.daily_submissions || []}
+                              challengeStartDate={leaderboardData.challenge.start_date}
+                              compact={true}
+                            />
+                          </div>
+                          <div className="col-completion">
+                            <span className="completion-value">{Math.round(participant.completion_percentage || 0)}%</span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    /* Detailed Grid View */
+                    <div className="detailed-grid">
+                      {leaderboardData.leaderboard.slice(3).map((participant, index) => {
+                        const isExpanded = expandedRows.has(participant.id);
+                        const recentDays = getDailyBreakdown(participant.daily_submissions, leaderboardData.challenge.start_date);
+                        
+                        return (
+                          <div key={participant.id} className="participant-container">
+                            <div 
+                              className={`participant-row ${isCurrentUser(participant.id) ? 'current-user' : ''} ${isExpanded ? 'expanded' : ''}`}
+                              data-participant-id={participant.id}
+                            >
                             <div className="participant-rank">
                               <span className="rank-icon">
                                 {getRankIcon(participant.rank)}
@@ -359,11 +426,12 @@ const Leaderboard = () => {
                                 )}
                               </div>
                             </div>
-                          )}
-                        </div>
-                      );
-                    })}
-                  </div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
                 </div>
 
                 {/* Participant Tooltip */}
