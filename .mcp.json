@@ -15,6 +15,10 @@
     "browsermcp": {
       "command": "npx",
       "args": ["@browsermcp/mcp@latest"]
+    },
+    "vercel": {
+      "command": "npx",
+      "args": ["-y", "@vercel/mcp-server@latest"]
     }
   }
 }
